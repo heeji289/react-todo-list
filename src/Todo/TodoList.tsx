@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BiCheckbox, BiCheckboxChecked } from 'react-icons/bi';
+import { BiCheckbox, BiCheckboxChecked, BiTrash } from 'react-icons/bi';
 import uuid from 'react-uuid';
 
 type ItemType = {
@@ -28,20 +28,47 @@ export function TodoList() {
     setInputText('');
   };
 
+  const onClickDelete = (itemID: string) => {
+    setItemList(prev => prev.filter(v => v.itemID !== itemID));
+  };
+
+  const onToggleCheck = (itemID: string) => {
+    setItemList(prev =>
+      prev.map(v => {
+        if (v.itemID === itemID) {
+          return {
+            ...v,
+            isCompleted: !v.isCompleted,
+          };
+        } else {
+          return v;
+        }
+      })
+    );
+  };
+
   return (
     <div style={{ border: '1px solid red' }}>
       {itemList.map(v => {
         return (
-          <p
+          <div
             key={v.itemID}
             style={{
               display: 'flex',
               alignItems: 'center',
               flexDirection: 'row',
             }}>
-            {v.isCompleted ? <BiCheckboxChecked /> : <BiCheckbox />}
-            {v.description}
-          </p>
+            <p onClick={() => onToggleCheck(v.itemID)}>
+              {v.isCompleted ? <BiCheckboxChecked /> : <BiCheckbox />}
+            </p>
+            <p
+              style={{
+                textDecoration: v.isCompleted ? 'line-through' : 'none',
+              }}>
+              {v.description}
+            </p>
+            <BiTrash onClick={() => onClickDelete(v.itemID)} />
+          </div>
         );
       })}
 
