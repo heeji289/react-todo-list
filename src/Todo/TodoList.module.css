@@ -30,10 +30,23 @@
 }
 
 .textInput {
-  border: 0;
   width: 300px;
   height: 30px;
   border: 2px solid black;
+  font-size: medium;
+  font-weight: bold;
+  padding: 0px 8px;
+}
+
+.textInput:focus {
+  outline: none;
+  border: 3px solid blue;
+}
+
+.textInput::placeholder {
+  font-size: medium;
+  color: darkgray;
+  padding: 2px;
 }
 
 .addButton {
