@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useState } from 'react';
 import { BiCheckbox, BiCheckboxChecked, BiTrash } from 'react-icons/bi';
 import uuid from 'react-uuid';
@@ -17,7 +18,7 @@ export function TodoList() {
     setInputText(e.target.value);
   };
 
-  const onClickAdd = (e: React.MouseEvent<HTMLElement>) => {
+  const onClickAdd = () => {
     setItemList(prev =>
       prev.concat({
         itemID: uuid(),
@@ -48,31 +49,22 @@ export function TodoList() {
     );
   };
 
+  const renderItemList = useMemo(() => {
+    return itemList.map(v => {
+      return (
+        <TodoItem
+          key={v.itemID}
+          item={v}
+          onClickDelete={onClickDelete}
+          onToggleCheck={onToggleCheck}
+        />
+      );
+    });
+  }, [itemList]);
+
   return (
     <div className={styles.itemList}>
-      {itemList.map(v => {
-        return (
-          <div key={v.itemID} className={styles.item}>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <p onClick={() => onToggleCheck(v.itemID)}>
-                {v.isCompleted ? (
-                  <BiCheckboxChecked size={30} />
-                ) : (
-                  <BiCheckbox size={30} />
-                )}
-              </p>
-              <p
-                className={styles.itemDesciption}
-                style={{
-                  textDecoration: v.isCompleted ? 'line-through' : 'none',
-                }}>
-                {v.description}
-              </p>
-            </div>
-            <BiTrash onClick={() => onClickDelete(v.itemID)} size={30} />
-          </div>
-        );
-      })}
+      {renderItemList}
 
       <div className={styles.textInputContainer}>
         <input
@@ -86,6 +78,38 @@ export function TodoList() {
           추가하기
         </button>
       </div>
+    </div>
+  );
+}
+
+function TodoItem({
+  item,
+  onToggleCheck,
+  onClickDelete,
+}: {
+  item: ItemType;
+  onToggleCheck: (itemID: string) => void;
+  onClickDelete: (itemID: string) => void;
+}) {
+  return (
+    <div className={styles.item}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <p onClick={() => onToggleCheck(item.itemID)}>
+          {item.isCompleted ? (
+            <BiCheckboxChecked size={30} />
+          ) : (
+            <BiCheckbox size={30} />
+          )}
+        </p>
+        <p
+          className={styles.itemDesciption}
+          style={{
+            textDecoration: item.isCompleted ? 'line-through' : 'none',
+          }}>
+          {item.description}
+        </p>
+      </div>
+      <BiTrash onClick={() => onClickDelete(item.itemID)} size={30} />
     </div>
   );
 }
