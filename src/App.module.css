@@ -1,0 +1,10 @@
+.App {
+  border-width: 1px;
+  /* border-color: green; */
+  /* background-color: salmon; */
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

@@ -1,0 +1,53 @@
+.itemList {
+  width: 600px;
+  border: 3px solid black;
+  border-radius: 20px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px;
+  /* border: 1px solid red; */
+}
+
+.itemDesciption {
+  /* color: rebeccapurple; */
+  /* line-height: 1; */
+  font-size: medium;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.textInputContainer {
+  display: flex;
+  /* border: 1px solid blueviolet; */
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px;
+}
+
+.textInput {
+  border: 0;
+  width: 300px;
+  height: 30px;
+  border: 2px solid black;
+}
+
+.addButton {
+  padding: 8px;
+  font-weight: 500;
+  border-radius: 24px;
+  border-color: black;
+  display: block;
+  outline: none;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  align-self: center;
+  background-color: black;
+  color: white;
+  font-size: medium;
+  font-weight: bold;
+}

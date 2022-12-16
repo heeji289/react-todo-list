@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { BiCheckbox, BiCheckboxChecked, BiTrash } from 'react-icons/bi';
 import uuid from 'react-uuid';
+import styles from './TodoList.module.css';
 
 type ItemType = {
   itemID: string;
@@ -48,32 +49,43 @@ export function TodoList() {
   };
 
   return (
-    <div style={{ border: '1px solid red' }}>
+    <div className={styles.itemList}>
       {itemList.map(v => {
         return (
-          <div
-            key={v.itemID}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row',
-            }}>
-            <p onClick={() => onToggleCheck(v.itemID)}>
-              {v.isCompleted ? <BiCheckboxChecked /> : <BiCheckbox />}
-            </p>
-            <p
-              style={{
-                textDecoration: v.isCompleted ? 'line-through' : 'none',
-              }}>
-              {v.description}
-            </p>
-            <BiTrash onClick={() => onClickDelete(v.itemID)} />
+          <div key={v.itemID} className={styles.item}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <p onClick={() => onToggleCheck(v.itemID)}>
+                {v.isCompleted ? (
+                  <BiCheckboxChecked size={30} />
+                ) : (
+                  <BiCheckbox size={30} />
+                )}
+              </p>
+              <p
+                className={styles.itemDesciption}
+                style={{
+                  textDecoration: v.isCompleted ? 'line-through' : 'none',
+                }}>
+                {v.description}
+              </p>
+            </div>
+            <BiTrash onClick={() => onClickDelete(v.itemID)} size={30} />
           </div>
         );
       })}
 
-      <input type="text" value={inputText} onChange={onChangeText} />
-      <button onClick={onClickAdd}>➕ 추가하기</button>
+      <div className={styles.textInputContainer}>
+        <input
+          className={styles.textInput}
+          type="text"
+          value={inputText}
+          onChange={onChangeText}
+          placeholder="추가할 아이템을 적어보세요!"
+        />
+        <button className={styles.addButton} onClick={onClickAdd}>
+          추가하기
+        </button>
+      </div>
     </div>
   );
 }
