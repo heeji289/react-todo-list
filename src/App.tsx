@@ -1,7 +1,10 @@
+import { TodoList } from 'Todo/TodoList';
+
 function App() {
   return (
     <div className="App">
-      <p>Heeji</p>
+      <h2>TODO LIST 🔖</h2>
+      <TodoList />
     </div>
   );
 }
