@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useMemo } from 'react';
 import { useState } from 'react';
 import { BiCheckbox, BiCheckboxChecked, BiTrash } from 'react-icons/bi';
@@ -16,7 +16,11 @@ type FilterListType = typeof FILTER_LIST[number];
 
 export function TodoList() {
   const [itemFilter, setItemFilter] = useState<FilterListType>('all');
-  const [itemList, setItemList] = useState<ItemType[]>([]);
+  const [itemList, setItemList] = useState(() => {
+    const result: ItemType[] =
+      JSON.parse(localStorage.getItem('todos') ?? '') || [];
+    return result;
+  });
   const [inputText, setInputText] = useState('');
 
   const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +75,10 @@ export function TodoList() {
       }
     });
   }, [itemList, itemFilter]);
+
+  useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(itemList));
+  }, [itemList]);
 
   return (
     <div className={styles.itemList}>
