@@ -17,9 +17,13 @@ type FilterListType = typeof FILTER_LIST[number];
 export function TodoList() {
   const [itemFilter, setItemFilter] = useState<FilterListType>('all');
   const [itemList, setItemList] = useState(() => {
-    const result: ItemType[] =
-      JSON.parse(localStorage.getItem('todos') ?? '') || [];
-    return result;
+    const localData = localStorage.getItem('todos');
+
+    if (localData) {
+      return JSON.parse(localData) as ItemType[];
+    } else {
+      return [];
+    }
   });
   const [inputText, setInputText] = useState('');
 
