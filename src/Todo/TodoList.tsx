@@ -1,3 +1,4 @@
+import React from 'react';
 import { useMemo } from 'react';
 import { useState } from 'react';
 import { BiCheckbox, BiCheckboxChecked, BiTrash } from 'react-icons/bi';
@@ -10,7 +11,11 @@ type ItemType = {
   isCompleted: boolean;
 };
 
+const FILTER_LIST = ['all', 'completed', 'progress'] as const;
+type FilterListType = typeof FILTER_LIST[number];
+
 export function TodoList() {
+  const [itemFilter, setItemFilter] = useState<FilterListType>('all');
   const [itemList, setItemList] = useState<ItemType[]>([]);
   const [inputText, setInputText] = useState('');
 
@@ -49,22 +54,53 @@ export function TodoList() {
     );
   };
 
-  const renderItemList = useMemo(() => {
-    return itemList.map(v => {
-      return (
-        <TodoItem
-          key={v.itemID}
-          item={v}
-          onClickDelete={onClickDelete}
-          onToggleCheck={onToggleCheck}
-        />
-      );
+  const onApplyFilter = (status: FilterListType) => {
+    setItemFilter(status);
+  };
+
+  const filteredItemList = useMemo(() => {
+    return itemList.filter(item => {
+      if (itemFilter === 'all') {
+        return true;
+      } else if (itemFilter === 'completed') {
+        return item.isCompleted;
+      } else if (itemFilter === 'progress') {
+        return !item.isCompleted;
+      } else {
+        return false;
+      }
     });
-  }, [itemList]);
+  }, [itemList, itemFilter]);
 
   return (
     <div className={styles.itemList}>
-      {renderItemList}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+        }}>
+        <button
+          className={styles.addButton}
+          onClick={() => onApplyFilter('all')}>
+          전체
+        </button>
+        <button
+          className={styles.addButton}
+          onClick={() => onApplyFilter('completed')}>
+          완료
+        </button>
+        <button
+          className={styles.addButton}
+          onClick={() => onApplyFilter('progress')}>
+          미완료
+        </button>
+      </div>
+
+      <TodoListComponent
+        list={filteredItemList}
+        onClickDelete={onClickDelete}
+        onToggleCheck={onToggleCheck}
+      />
 
       <div className={styles.textInputContainer}>
         <input
@@ -81,6 +117,31 @@ export function TodoList() {
     </div>
   );
 }
+
+const TodoListComponent = React.memo(
+  ({
+    list,
+    onClickDelete,
+    onToggleCheck,
+  }: {
+    list: ItemType[];
+    onClickDelete: (itemID: string) => void;
+    onToggleCheck: (itemID: string) => void;
+  }) => {
+    return (
+      <>
+        {list.map(v => (
+          <TodoItem
+            key={v.itemID}
+            item={v}
+            onClickDelete={onClickDelete}
+            onToggleCheck={onToggleCheck}
+          />
+        ))}
+      </>
+    );
+  }
+);
 
 function TodoItem({
   item,
