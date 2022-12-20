@@ -78,20 +78,35 @@ export function TodoList() {
         style={{
           display: 'flex',
           flexDirection: 'row',
+          padding: '6px',
         }}>
         <button
           className={styles.addButton}
-          onClick={() => onApplyFilter('all')}>
+          onClick={() => onApplyFilter('all')}
+          style={{
+            marginRight: '4px',
+            backgroundColor: itemFilter !== 'all' ? 'white' : undefined,
+            color: itemFilter !== 'all' ? 'black' : undefined,
+          }}>
           전체
         </button>
         <button
           className={styles.addButton}
-          onClick={() => onApplyFilter('completed')}>
+          onClick={() => onApplyFilter('completed')}
+          style={{
+            marginRight: '4px',
+            backgroundColor: itemFilter !== 'completed' ? 'white' : undefined,
+            color: itemFilter !== 'completed' ? 'black' : undefined,
+          }}>
           완료
         </button>
         <button
           className={styles.addButton}
-          onClick={() => onApplyFilter('progress')}>
+          onClick={() => onApplyFilter('progress')}
+          style={{
+            backgroundColor: itemFilter !== 'progress' ? 'white' : undefined,
+            color: itemFilter !== 'progress' ? 'black' : undefined,
+          }}>
           미완료
         </button>
       </div>
