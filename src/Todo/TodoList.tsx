@@ -25,23 +25,6 @@ export function TodoList() {
       return [];
     }
   });
-  const [inputText, setInputText] = useState('');
-
-  const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputText(e.target.value);
-  };
-
-  const onClickAdd = () => {
-    setItemList(prev =>
-      prev.concat({
-        itemID: uuid(),
-        description: inputText,
-        isCompleted: false,
-      })
-    );
-
-    setInputText('');
-  };
 
   const onClickDelete = (itemID: string) => {
     setItemList(prev => prev.filter(v => v.itemID !== itemID));
@@ -66,6 +49,16 @@ export function TodoList() {
     setItemFilter(status);
   };
 
+  const onAddTodoCallback = (inputText: string) => {
+    setItemList(prev =>
+      prev.concat({
+        itemID: uuid(),
+        description: inputText,
+        isCompleted: false,
+      })
+    );
+  };
+
   const filteredItemList = useMemo(() => {
     return itemList.filter(item => {
       if (itemFilter === 'all') {
@@ -86,42 +79,10 @@ export function TodoList() {
 
   return (
     <div className={styles.itemList}>
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          padding: '6px',
-        }}>
-        <button
-          className={styles.addButton}
-          onClick={() => onApplyFilter('all')}
-          style={{
-            marginRight: '4px',
-            backgroundColor: itemFilter !== 'all' ? 'white' : undefined,
-            color: itemFilter !== 'all' ? 'black' : undefined,
-          }}>
-          전체
-        </button>
-        <button
-          className={styles.addButton}
-          onClick={() => onApplyFilter('completed')}
-          style={{
-            marginRight: '4px',
-            backgroundColor: itemFilter !== 'completed' ? 'white' : undefined,
-            color: itemFilter !== 'completed' ? 'black' : undefined,
-          }}>
-          완료
-        </button>
-        <button
-          className={styles.addButton}
-          onClick={() => onApplyFilter('progress')}
-          style={{
-            backgroundColor: itemFilter !== 'progress' ? 'white' : undefined,
-            color: itemFilter !== 'progress' ? 'black' : undefined,
-          }}>
-          미완료
-        </button>
-      </div>
+      <ItemFilter
+        itemFilter={itemFilter}
+        onApplyFilterCallback={onApplyFilter}
+      />
 
       <TodoListComponent
         list={filteredItemList}
@@ -129,19 +90,55 @@ export function TodoList() {
         onToggleCheck={onToggleCheck}
       />
 
-      <div className={styles.textInputContainer}>
-        <input
-          className={styles.textInput}
-          type="text"
-          value={inputText}
-          onChange={onChangeText}
-          placeholder="추가할 아이템을 적어보세요!"
-        />
-        <button className={styles.addButton} onClick={onClickAdd}>
-          추가하기
-        </button>
-      </div>
+      <AddTodoForm onClickAddCallback={onAddTodoCallback} />
     </div>
+  );
+}
+
+function ItemFilter({
+  itemFilter,
+  onApplyFilterCallback,
+}: {
+  itemFilter: FilterListType;
+  onApplyFilterCallback: (status: FilterListType) => void;
+}) {
+  return (
+    <header
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        padding: '6px',
+      }}>
+      <button
+        className={styles.addButton}
+        onClick={() => onApplyFilterCallback('all')}
+        style={{
+          marginRight: '4px',
+          backgroundColor: itemFilter !== 'all' ? 'white' : undefined,
+          color: itemFilter !== 'all' ? 'black' : undefined,
+        }}>
+        전체
+      </button>
+      <button
+        className={styles.addButton}
+        onClick={() => onApplyFilterCallback('completed')}
+        style={{
+          marginRight: '4px',
+          backgroundColor: itemFilter !== 'completed' ? 'white' : undefined,
+          color: itemFilter !== 'completed' ? 'black' : undefined,
+        }}>
+        완료
+      </button>
+      <button
+        className={styles.addButton}
+        onClick={() => onApplyFilterCallback('progress')}
+        style={{
+          backgroundColor: itemFilter !== 'progress' ? 'white' : undefined,
+          color: itemFilter !== 'progress' ? 'black' : undefined,
+        }}>
+        미완료
+      </button>
+    </header>
   );
 }
 
@@ -156,16 +153,18 @@ const TodoListComponent = React.memo(
     onToggleCheck: (itemID: string) => void;
   }) => {
     return (
-      <>
-        {list.map(v => (
-          <TodoItem
-            key={v.itemID}
-            item={v}
-            onClickDelete={onClickDelete}
-            onToggleCheck={onToggleCheck}
-          />
-        ))}
-      </>
+      <section>
+        <ul>
+          {list.map(v => (
+            <TodoItem
+              key={v.itemID}
+              item={v}
+              onClickDelete={onClickDelete}
+              onToggleCheck={onToggleCheck}
+            />
+          ))}
+        </ul>
+      </section>
     );
   }
 );
@@ -180,7 +179,7 @@ function TodoItem({
   onClickDelete: (itemID: string) => void;
 }) {
   return (
-    <div className={styles.item}>
+    <li className={styles.item}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <p onClick={() => onToggleCheck(item.itemID)}>
           {item.isCompleted ? (
@@ -198,6 +197,43 @@ function TodoItem({
         </p>
       </div>
       <BiTrash onClick={() => onClickDelete(item.itemID)} size={30} />
-    </div>
+    </li>
+  );
+}
+
+function AddTodoForm({
+  onClickAddCallback,
+}: {
+  onClickAddCallback: (text: string) => void;
+}) {
+  const [inputText, setInputText] = useState('');
+
+  const onChangeText = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputText(e.target.value);
+  };
+
+  const onSubmitTodoItem = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (inputText.trim().length === 0) {
+      alert('할 일을 입력해주세요');
+      return;
+    }
+
+    onClickAddCallback(inputText);
+    setInputText('');
+  };
+
+  return (
+    <form className={styles.textInputContainer} onSubmit={onSubmitTodoItem}>
+      <input
+        className={styles.textInput}
+        type="text"
+        value={inputText}
+        onChange={onChangeText}
+        placeholder="추가할 아이템을 적어보세요!"
+      />
+      <button className={styles.addButton}>추가하기</button>
+    </form>
   );
 }
