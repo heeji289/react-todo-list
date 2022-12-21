@@ -109,6 +109,8 @@ function ItemFilter({
   itemFilter: FilterListType;
   onApplyFilterCallback: (status: FilterListType) => void;
 }) {
+  console.log(itemFilter);
+
   return (
     <header
       style={{
@@ -120,7 +122,7 @@ function ItemFilter({
         <button
           key={v}
           className={`${styles.filterChip} ${
-            itemFilter === v && styles.selected
+            itemFilter === v ? styles.selected : undefined
           }`}
           onClick={() => onApplyFilterCallback(v)}
           style={{ marginRight: '4px' }}>

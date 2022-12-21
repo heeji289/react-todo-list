@@ -5,6 +5,7 @@
   --color-text: #22243b;
   --color-accent: #f16e03;
   --color-black: #222222;
+  --color-white: white;
 }
 
 html.dark {
@@ -13,7 +14,8 @@ html.dark {
   --color-grey: #22243b;
   --color-text: #d1d1d1;
   --color-accent: blue;
-  --color-black: #d1d1d1;
+  --color-black: white;
+  --color-white: #222222;
 }
 
 body {

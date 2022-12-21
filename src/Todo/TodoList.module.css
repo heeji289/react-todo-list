@@ -2,7 +2,7 @@
   width: 600px;
   border: 3px solid black;
   border-radius: 20px;
-  background-color: var(--color-bg);
+  background-color: white;
 }
 
 .item {
@@ -70,19 +70,18 @@
   padding: 8px;
   font-weight: 500;
   border-radius: 24px;
-  border-color: black;
+  border-color: var(--color-black);
   display: block;
-  outline: none;
   text-decoration: none;
   letter-spacing: 0.5px;
   align-self: center;
-  background-color: black;
-  color: white;
+  background-color: var(--color-bg);
+  color: var(--color-black);
   font-size: medium;
   font-weight: bold;
 }
 
 .filterChip.selected {
   background-color: var(--color-black);
-  color: var(--color-bg);
+  color: var(--color-white);
 }
