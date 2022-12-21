@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { useState } from 'react';
 import { BiCheckbox, BiCheckboxChecked, BiTrash } from 'react-icons/bi';
 import uuid from 'react-uuid';
+import { useDarkMode } from './DarkmodeContext';
 import styles from './TodoList.module.css';
 
 type ItemType = {
@@ -15,6 +16,8 @@ const FILTER_LIST = ['all', 'completed', 'progress'] as const;
 type FilterListType = typeof FILTER_LIST[number];
 
 export function TodoList() {
+  const { darkMode, toggleDarkMode } = useDarkMode();
+
   const [itemFilter, setItemFilter] = useState<FilterListType>('all');
   const [itemList, setItemList] = useState(() => {
     const localData = localStorage.getItem('todos');
@@ -79,6 +82,10 @@ export function TodoList() {
 
   return (
     <div className={styles.itemList}>
+      <button onClick={toggleDarkMode}>
+        {darkMode ? '다크모드 끄기' : '다크모드 켜기'}
+      </button>
+
       <ItemFilter
         itemFilter={itemFilter}
         onApplyFilterCallback={onApplyFilter}
@@ -109,35 +116,17 @@ function ItemFilter({
         flexDirection: 'row',
         padding: '6px',
       }}>
-      <button
-        className={styles.addButton}
-        onClick={() => onApplyFilterCallback('all')}
-        style={{
-          marginRight: '4px',
-          backgroundColor: itemFilter !== 'all' ? 'white' : undefined,
-          color: itemFilter !== 'all' ? 'black' : undefined,
-        }}>
-        전체
-      </button>
-      <button
-        className={styles.addButton}
-        onClick={() => onApplyFilterCallback('completed')}
-        style={{
-          marginRight: '4px',
-          backgroundColor: itemFilter !== 'completed' ? 'white' : undefined,
-          color: itemFilter !== 'completed' ? 'black' : undefined,
-        }}>
-        완료
-      </button>
-      <button
-        className={styles.addButton}
-        onClick={() => onApplyFilterCallback('progress')}
-        style={{
-          backgroundColor: itemFilter !== 'progress' ? 'white' : undefined,
-          color: itemFilter !== 'progress' ? 'black' : undefined,
-        }}>
-        미완료
-      </button>
+      {FILTER_LIST.map(v => (
+        <button
+          key={v}
+          className={`${styles.filterChip} ${
+            itemFilter === v && styles.selected
+          }`}
+          onClick={() => onApplyFilterCallback(v)}
+          style={{ marginRight: '4px' }}>
+          {v}
+        </button>
+      ))}
     </header>
   );
 }
